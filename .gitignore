@@ -3,6 +3,12 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+# NyashkoOS resources
+
+*.png
+*.jpg
+*.fsi
+
 # User-specific files
 *.rsuser
 *.suo

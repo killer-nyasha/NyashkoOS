@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="efi">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="nyashko_os">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="resources">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="nyashko_os\textmode">
+      <UniqueIdentifier>{897623a9-c629-4472-90b6-941c9c165ddb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="nyashko_os\window_manager">
+      <UniqueIdentifier>{1611e515-3c4e-48b3-8bf4-b8186512a1ab}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="NyashkoOS.cpp">
+      <Filter>nyashko_os</Filter>
+    </ClCompile>
+    <ClCompile Include="core_globals.cpp">
+      <Filter>nyashko_os</Filter>
+    </ClCompile>
+    <ClCompile Include="n_heap.cpp">
+      <Filter>nyashko_os</Filter>
+    </ClCompile>
+    <ClCompile Include="n_iostream.cpp">
+      <Filter>nyashko_os\textmode</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="core_globals.h">
+      <Filter>nyashko_os</Filter>
+    </ClInclude>
+    <ClInclude Include="n_util.h">
+      <Filter>nyashko_os</Filter>
+    </ClInclude>
+    <ClInclude Include="includebin.h">
+      <Filter>resources</Filter>
+    </ClInclude>
+    <ClInclude Include="fsi.h">
+      <Filter>nyashko_os</Filter>
+    </ClInclude>
+    <ClInclude Include="efi.h">
+      <Filter>efi</Filter>
+    </ClInclude>
+    <ClInclude Include="efi_filesystem.h">
+      <Filter>efi</Filter>
+    </ClInclude>
+    <ClInclude Include="efi_graphics.h">
+      <Filter>efi</Filter>
+    </ClInclude>
+    <ClInclude Include="efi_text_input.h">
+      <Filter>efi</Filter>
+    </ClInclude>
+    <ClInclude Include="efi_text_output.h">
+      <Filter>efi</Filter>
+    </ClInclude>
+    <ClInclude Include="efi-drawing.h">
+      <Filter>efi</Filter>
+    </ClInclude>
+    <ClInclude Include="n_heap.h">
+      <Filter>nyashko_os</Filter>
+    </ClInclude>
+    <ClInclude Include="n_iostream.h">
+      <Filter>nyashko_os\textmode</Filter>
+    </ClInclude>
+    <ClInclude Include="RasterFont.h">
+      <Filter>nyashko_os\window_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="efi_pixel.h">
+      <Filter>efi</Filter>
+    </ClInclude>
+    <ClInclude Include="n_out_g_stream.h">
+      <Filter>nyashko_os\window_manager</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="resources\includebin.obj">
+      <Filter>resources</Filter>
+    </Object>
+  </ItemGroup>
+</Project>
