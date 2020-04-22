@@ -214,6 +214,7 @@
     <ClInclude Include="efi.h" />
     <ClInclude Include="efi_filesystem.h" />
     <ClInclude Include="efi_graphics.h" />
+    <ClInclude Include="efi_mp.h" />
     <ClInclude Include="efi_pixel.h" />
     <ClInclude Include="efi_text_input.h" />
     <ClInclude Include="efi_text_output.h" />

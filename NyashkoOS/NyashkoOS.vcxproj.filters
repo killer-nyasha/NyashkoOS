@@ -80,6 +80,9 @@
     <ClInclude Include="n_out_g_stream.h">
       <Filter>nyashko_os\window_manager</Filter>
     </ClInclude>
+    <ClInclude Include="efi_mp.h">
+      <Filter>efi</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Object Include="resources\includebin.obj">

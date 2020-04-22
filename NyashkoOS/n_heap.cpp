@@ -3,7 +3,7 @@
 #include "core_globals.h"
 #include "n_iostream.h"
 
-unsigned char pseudoHeap[1024 * 1024 * 10];
+unsigned char pseudoHeap[1024 * 1024 * 20];
 size_t bytesUsed = 0;
 
 void* malloc(size_t size)

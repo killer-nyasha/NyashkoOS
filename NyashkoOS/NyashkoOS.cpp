@@ -10,7 +10,7 @@
 #include "includebin.h"
 
 Image windowBuffer;
-//Pixel* screen;
+Pixel* screenBuffer;
 
 extern "C" int atexit(void (*func)())
 {
@@ -80,6 +80,19 @@ void initializeGop()
 	//Gop->Blt(Gop, (Pixel*)windowBuffer.data, EfiBltBufferToVideo, 0, 0, 0, 0, 1024, 768, 0);
 }
 
+void initializeMp()
+{
+	BootServices->LocateHandleBuffer(ByProtocol,
+		&EFI_MP_SERVICES_PROTOCOL_GUID,
+		nullptr,
+		&handleCount,
+		&handleBuffer);
+	BootServices->HandleProtocol(
+		handleBuffer[0],
+		&EFI_MP_SERVICES_PROTOCOL_GUID,
+		(VOID**)&(MpServices));
+}
+
 void initializeFileSystem()
 {
 	//BootServices->LocateHandleBuffer(ByProtocol,
@@ -94,6 +107,64 @@ void initializeFileSystem()
 
 		//EFI_FILE_PROTOCOL* Root;
 	//FileSystem->OpenVolume(FileSystem, &Root);
+}
+
+void ap(void*)
+{
+	int k = 255;
+
+	while (true)
+	{
+		for (int y = 0; y < windowBuffer.size.y; y++)
+			for (int x = 0; x < windowBuffer.size.x; x++)
+				windowBuffer(x, y).Red++;
+	}
+
+}
+
+using ApFunction = void(*)(void* arg);
+
+void startAll(ApFunction f)
+{
+	EFI_EVENT myEvent;
+	BootServices->CreateEvent(EVT_RUNTIME, TPL_APPLICATION, nullptr, nullptr, &myEvent);
+	UINTN* failed;
+	MpServices->StartupAllAPs(MpServices, f, false, myEvent, 0, (void*)nullptr, &failed);
+}
+
+void startOne(int num, ApFunction f)
+{
+	EFI_EVENT myEvent;
+	BootServices->CreateEvent(EVT_RUNTIME, TPL_APPLICATION, nullptr, nullptr, &myEvent);
+	bool failed;
+	MpServices->StartupThisAP(MpServices, f, num, myEvent, 0, (void*)nullptr, &failed);
+}
+
+void showGraphicsModes()
+{
+	rgcout << L"Graphics modes:\r\n";
+	UINTN i = 0;
+	EFI_GRAPHICS_OUTPUT_MODE_INFORMATION* info;
+	UINTN sizeofinfo;
+	while (Gop->QueryMode(Gop, i, &sizeofinfo, &info) == EFI_SUCCESS)
+	{
+		rgcout << i << L": " << info->HorizontalResolution << L" x " << info->VerticalResolution << L"\r\n";
+		i++;
+	}
+}
+
+void showProcessors()
+{
+	UINTN procNum, enabledNum;
+	MpServices->GetNumberOfProcessors(MpServices, &procNum, &enabledNum);
+	rgcout << L"proc: " << procNum << L"; enabled: " << enabledNum << L"\r\n";
+
+	EFI_PROCESSOR_INFORMATION procInfo;
+	for (size_t i = 0; i < procNum; i++)
+	{
+		MpServices->GetProcessorInfo(MpServices, i, &procInfo);
+		rgcout << i << L": " << procInfo.StatusFlag << L"\r\n";
+	}
 }
 
 int main(EFI_HANDLE handle, EFI_SYSTEM_TABLE* table)
@@ -113,11 +184,12 @@ int main(EFI_HANDLE handle, EFI_SYSTEM_TABLE* table)
 	ConOut->OutputString(ConOut, L"Starting NyashkoOS...\r\n");
 
 	initializeGop();
-	Gop->SetMode(Gop, 3);
-	//windowBuffer = matrix<Pixel>(1024, 768);
-	windowBuffer.size.x = Gop->Mode->Info->HorizontalResolution;
-	windowBuffer.size.y = Gop->Mode->Info->VerticalResolution;
-	windowBuffer.data = (Pixel*)Gop->Mode->FrameBufferBase;
+	Gop->SetMode(Gop, 4);
+	windowBuffer = matrix<Pixel>(Gop->Mode->Info->HorizontalResolution, Gop->Mode->Info->VerticalResolution);
+	screenBuffer = (Pixel*)Gop->Mode->FrameBufferBase;
+	//windowBuffer.size.x = Gop->Mode->Info->HorizontalResolution;
+	//windowBuffer.size.y = Gop->Mode->Info->VerticalResolution;
+	//windowBuffer.data = (Pixel*)Gop->Mode->FrameBufferBase;
 
 
 	defaultFont = new RasterFont(__FONT);
@@ -130,29 +202,52 @@ int main(EFI_HANDLE handle, EFI_SYSTEM_TABLE* table)
 
 	rgcout << L"Version:\r\n";
 	rgcout << L"12:30" << L"\r\n";
-	{
-		rgcout << L"Graphics modes:\r\n";
-		UINTN i = 0;
-		EFI_GRAPHICS_OUTPUT_MODE_INFORMATION* info;
-		UINTN sizeofinfo;
-		while (Gop->QueryMode(Gop, i, &sizeofinfo, &info) == EFI_SUCCESS)
-		{
-			rgcout << i << L": " << info->HorizontalResolution << L" x " << info->VerticalResolution << L"\r\n";
-			i++;
-		}
-	}
 
-	exitBootServices();
+	initializeMp();
+
+	showProcessors();
+
+	startAll(ap);
+
+	//exitBootServices();
 
 	rgcout.coord = rgcout.minCoord;
 
+
+	//set wallpaper with scaling
+	{
+		float scaleInvX = (float)__WALLPAPER.width / windowBuffer.size.x;
+		float scaleInvY = (float)__WALLPAPER.height / windowBuffer.size.y;
+
+		if (scaleInvX > scaleInvY)
+			scaleInvY = scaleInvX;
+		else scaleInvX = scaleInvY;
+		
+
+		for (size_t y = 0; y < windowBuffer.size.y; y++)
+			for (size_t x = 0; x < windowBuffer.size.x; x++)
+			{
+				size_t wpx = (size_t)(x * scaleInvX);
+				size_t wpy = (size_t)(y * scaleInvY);
+
+				//if (wpx < __WALLPAPER.width && wpy < __WALLPAPER.height)
+					windowBuffer(x, y) = __WALLPAPER(wpx, wpy);
+			}
+	}
+
+
 	while (true)
 	{
+
+		for (size_t y = 0; y < windowBuffer.size.y; y++)
+			for (size_t x = 0; x < windowBuffer.size.x; x++)
+				screenBuffer[y * windowBuffer.size.x + x] = windowBuffer(x, y);
+
 		//static EFI_INPUT_KEY key;
 		//if (ConIn->ReadKeyStroke(ConIn, &key) == EFI_SUCCESS)
 			//if (key.UnicodeChar == 'y' || key.UnicodeChar == 'n')
 			{
-			rgcout << L'a';// key.UnicodeChar;
+			//rgcout << L'a';// key.UnicodeChar;
 
 				//refresh screen
 				//Gop->Blt(Gop, (Pixel*)windowBuffer.data, EfiBltBufferToVideo, rgcout.minCoord.x, rgcout.minCoord.y,

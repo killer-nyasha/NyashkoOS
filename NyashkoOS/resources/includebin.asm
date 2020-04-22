@@ -7,7 +7,7 @@ public __font
 
 section '.code' code readable executable
 
-inb 10
+;inb 10
 
 ;memcpy:
 mov         r9,r8
@@ -34,5 +34,5 @@ file 'wallpaper.fsi'
 __font:
 file 'font.fsi'
 
-pseudoHeap
-db 2*1024*1024 dup (0)
+;pseudoHeap
+;db 2*1024*1024 dup (0)

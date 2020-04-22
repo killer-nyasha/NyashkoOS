@@ -7,6 +7,7 @@ typedef struct EFI_GRAPHICS_OUTPUT_BLT_PIXEL {
 	UINT8  Reserved;
 } EFI_GRAPHICS_OUTPUT_BLT_PIXEL;
 
+#include "n_heap.h"
 #include "../../Vanguard/Vanguard/vectors.h"
 #include "../../Vanguard/Vanguard/matrix.h"
 

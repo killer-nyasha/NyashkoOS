@@ -4,9 +4,9 @@
 class OutGStream
 {
 public:
-	ivect2 minCoord = ivect2(250, 100);
-	ivect2 maxCoord = ivect2(250 + 600, 100 + 600);
-	ivect2 coord = ivect2(250, 100);
+	ivect2 minCoord = ivect2(10, 10);
+	ivect2 maxCoord = ivect2(10 + 1000, 10 + 800);
+	ivect2 coord = ivect2(10, 10);
 
 	Image* img = nullptr;
 	RasterFont* defaultFont = nullptr;

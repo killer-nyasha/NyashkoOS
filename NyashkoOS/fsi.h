@@ -1,5 +1,6 @@
 #pragma once
 #include "efi_graphics.h"
+//#include "../../Vanguard/Vanguard/vectors.h"
 
 //#pragma intrinsic(memcpy)
 

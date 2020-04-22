@@ -110,6 +110,8 @@ VOID
 	IN VOID    *Context
 	);
 
+#define EVT_RUNTIME 40000000
+
 typedef
 EFI_STATUS
 (EFIAPI *EFI_CREATE_EVENT) (
@@ -543,3 +545,4 @@ typedef struct EFI_RUNTIME_SERVICES {
 #include "efi_text_output.h"
 #include "efi_graphics.h"
 #include "efi_filesystem.h"
+#include "efi_mp.h"
